@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>388班 · 作文素材</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%; min-height: 100vh;
+            background-color: #fafafa;
+            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+            color: #222; line-height: 1.7;
+            overflow-x: hidden; scroll-behavior: smooth;
+        }
+        body {
+            padding: 15px; max-width: 820px; margin: 0 auto; padding-bottom: 120px;
+        }
+        button { cursor: pointer; border: none; background: none; }
+
+        .page-header {
+            background-color: #fff; border-radius: 16px;
+            padding: 28px 20px; text-align: center; margin-bottom: 20px;
+            border-bottom: 3px solid #2563eb;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        }
+        .site-title {
+            font-size: 34px; font-weight: 900; color: #2563eb;
+            letter-spacing: 2px; margin-bottom: 6px;
+        }
+        .site-subtitle {
+            font-size: 15px; color: #666; font-weight: 500;
+        }
+
+        .contribute-btn {
+            display: flex; align-items: center; justify-content: center;
+            width: 100%; height: 54px;
+            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            color: #fff; font-size: 17px; font-weight: bold;
+            border-radius: 14px; text-decoration: none;
+            margin-bottom: 22px; transition: all 0.25s ease;
+        }
+        .contribute-btn:hover { opacity: 0.9; transform: scale(1.01); }
+
+        .search-input {
+            width: 100%; height: 50px; background-color: #fff;
+            border: 1px solid #eee; border-radius: 12px;
+            padding: 0 18px; font-size: 15px; margin-bottom: 20px;
+        }
+
+        .article-list-header {
+            font-size: 19px; font-weight: 700; margin-bottom: 18px;
+            padding-left: 10px; border-left: 4px solid #2563eb;
+        }
+
+        #articleListContainer { display: block; }
+
+        .article-card {
+            background-color: #fff; border-radius: 16px;
+            padding: 24px; margin-bottom: 18px; cursor: pointer;
+            transition: all 0.3s ease; border: 1px solid #f0f0f0;
+        }
+        .article-card:hover { transform: translateY(-3px); border-color: #2563eb; }
+        .article-card-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        .article-card-meta {
+            display: flex; justify-content: space-between;
+            padding-bottom: 12px; margin-bottom: 14px;
+            border-bottom: 1px dashed #eee; font-size: 13px; color: #666;
+        }
+        .article-card-excerpt {
+            font-size: 15px; color: #555;
+            display: -webkit-box; -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical; overflow: hidden;
+        }
+
+        .pagination-container {
+            display: flex; justify-content: center; gap: 16px;
+            margin-top: 30px; align-items: center;
+        }
+        .pagination-btn {
+            padding: 8px 20px; background-color: #fff;
+            border: 1px solid #2563eb; color: #2563eb;
+            font-size: 14px; font-weight: 600; border-radius: 8px;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .pagination-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .empty-tip {
+            background-color: #fff; border-radius: 14px;
+            padding: 50px 20px; text-align: center; color: #999;
+        }
+
+        /* 弹窗 */
+        .article-modal {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: rgba(0,0,0,0.65); display: none;
+            align-items: center; justify-content: center;
+            z-index: 9999; padding: 15px;
+        }
+        .article-modal.show { display: flex; }
+        .modal-container {
+            background-color: #fff; width: 100%; max-width: 740px;
+            border-radius: 18px; max-height: 85vh; overflow: hidden;
+            display: flex; flex-direction: column;
+        }
+        .modal-header {
+            padding: 24px; background-color: #eff6ff;
+            border-bottom: 1px solid #dbeafe;
+        }
+        .modal-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
+        .modal-author { font-size: 14px; color: #666; }
+        .modal-body {
+            padding: 28px 24px; font-size: 16px; line-height: 1.9;
+            overflow-y: auto; white-space: pre-wrap;
+        }
+        .modal-footer { padding: 20px 24px; text-align: right; }
+        .modal-close-btn {
+            padding: 12px 26px; background-color: #2563eb;
+            color: #fff; font-size: 15px; border-radius: 10px;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+
+        .back-top-btn {
+            position: fixed; right: 20px; bottom: 20px;
+            width: 50px; height: 50px; background-color: #2563eb;
+            color: #fff; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; opacity: 0; pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .back-top-btn.show { opacity: 1; pointer-events: auto; }
+
+        .reading-progress {
+            position: fixed; top: 0; left: 0; width: 0%; height: 3px;
+            background-color: #2563eb; z-index: 10000; transition: width 0.1s;
+        }
+
+        .page-footer {
+            margin-top: 40px; padding-top: 26px;
+            border-top: 1px solid #eee; text-align: center;
+            color: #999; font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .site-title { font-size: 28px; }
+            .article-card-title { font-size: 18px; }
+            .modal-title { font-size: 20px; }
+            .contribute-btn { height: 48px; font-size: 16px; }
+            .pagination-btn { padding: 6px 14px; font-size: 13px; }
+            .back-top-btn { width: 44px; height: 44px; font-size: 20px; }
+        }
+        @media (max-width: 360px) {
+            body { padding: 10px; }
+            .site-title { font-size: 24px; }
+        }
+
+        @media (min-width: 1024px) {
+            body { max-width: 1400px; padding: 20px 40px; }
+            #articleListContainer {
+                display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px;
+            }
+            .article-card { margin-bottom: 0; }
+            .article-card:hover {
+                transform: translateY(-6px);
+                box-shadow: 0 12px 28px rgba(0,0,0,0.1);
+            }
+            .pagination-container { margin-top: 50px; }
+            .modal-container { max-width: 920px; }
+            .search-input { max-width: 600px; margin-left: auto; margin-right: auto; }
+            .article-card { padding: 28px; }
+            .article-card-title { font-size: 22px; }
+        }
+        @media (min-width: 1600px) {
+            #articleListContainer { grid-template-columns: repeat(3, 1fr); }
+            body { max-width: 1600px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="reading-progress" id="readingProgress"></div>
+
+    <!-- 顶部 -->
+    <header class="page-header">
+        <h1 class="site-title">388班 · 作文素材</h1>
+        <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
+    </header>
+
+    <!-- 投稿按钮 -->
+    <a href="https://wj.qq.com/s2/26736829/64e9/" target="_blank" class="contribute-btn">📝 我要投稿 · 分享素材</a>
+
+    <!-- 搜索 -->
+    <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索作文素材、关键词...">
+
+    <h2 class="article-list-header">📖 作文素材库</h2>
+
+    <!-- 文章列表 -->
+    <div id="articleListContainer"></div>
+
+    <!-- 分页 -->
+    <div id="paginationContainer" class="pagination-container">
+        <button id="prevPageBtn" class="pagination-btn" disabled>‹ 上一页</button>
+        <span id="pageInfo" style="font-size:14px; color:#666;">第 1 / 1 页</span>
+        <button id="nextPageBtn" class="pagination-btn" disabled>下一页 ›</button>
+    </div>
+
+    <!-- 文章弹窗 -->
+    <div class="article-modal" id="articleModal">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalArticleTitle"></h3>
+                <div class="modal-author" id="modalArticleAuthor"></div>
+            </div>
+            <div class="modal-body" id="modalArticleContent"></div>
+            <div class="modal-footer">
+                <button class="modal-close-btn" id="closeModalBtn">关闭阅读</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="page-footer">
+        <div class="copyright">© 2026 388班 · 作文素材库</div>
+    </footer>
+
+    <!-- 回到顶部 -->
+    <div class="back-top-btn" id="backTopBtn">↑</div>
+
+    <!-- 数据 -->
+    <script src="articleData.js"></script>
+    <script>
+        const articleData = window.articleData || [];
+
+        const articleListContainer = document.getElementById('articleListContainer');
+        const searchInput = document.getElementById('searchInput');
+        const articleModal = document.getElementById('articleModal');
+        const closeModalBtn = document.getElementById('closeModalBtn');
+        const backTopBtn = document.getElementById('backTopBtn');
+        const readingProgress = document.getElementById('readingProgress');
+
+        let currentPage = 1;
+        const pageSize = 5;
+        let currentFilteredArticles = [];
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                return m === '&' ? '&amp;' : (m === '<' ? '&lt;' : '&gt;');
+            });
+        }
+
+        function renderArticleList() {
+            const keyword = searchInput.value.trim().toLowerCase();
+
+            currentFilteredArticles = articleData.filter(item => {
+                if (!item.check) return false;
+                return item.title.toLowerCase().includes(keyword) ||
+                       item.content.toLowerCase().includes(keyword) ||
+                       (item.author || '').toLowerCase().includes(keyword);
+            });
+
+            const totalPages = Math.ceil(currentFilteredArticles.length / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages || 1;
+            if (currentPage < 1) currentPage = 1;
+
+            const start = (currentPage - 1) * pageSize;
+            const pageArticles = currentFilteredArticles.slice(start, start + pageSize);
+
+            if (currentFilteredArticles.length === 0) {
+                articleListContainer.innerHTML = '<div class="empty-tip">📖 暂无素材，快来投稿第一篇吧</div>';
+                document.getElementById('paginationContainer').style.display = 'none';
+                return;
+            }
+            document.getElementById('paginationContainer').style.display = 'flex';
+
+            let html = '';
+            pageArticles.forEach((article, idx) => {
+                const originalIndex = start + idx;
+                html += `<div class="article-card" data-index="${originalIndex}">
+                            <h3 class="article-card-title">${escapeHtml(article.title)}</h3>
+                            <div class="article-card-meta">
+                                <span>作者：${escapeHtml(article.author || '388班同学')}</span>
+                                <span>${escapeHtml(article.cate || '')}</span>
+                            </div>
+                            <div class="article-card-excerpt">${escapeHtml(article.content.slice(0, 130))}${article.content.length > 130 ? '...' : ''}</div>
+                        </div>`;
+            });
+            articleListContainer.innerHTML = html;
+
+            document.getElementById('pageInfo').innerText = `第 ${currentPage} / ${totalPages} 页`;
+            document.getElementById('prevPageBtn').disabled = (currentPage <= 1);
+            document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages);
+
+            document.querySelectorAll('.article-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const data = currentFilteredArticles[parseInt(card.dataset.index)];
+                    if (!data) return;
+                    document.getElementById('modalArticleTitle').innerText = data.title;
+                    document.getElementById('modalArticleAuthor').innerText = `作者：${data.author || '388班同学'}`;
+                    document.getElementById('modalArticleContent').innerText = data.content;
+                    articleModal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+
+        function resetAndRender() { currentPage = 1; renderArticleList(); }
+
+        function goPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderArticleList();
+                document.querySelector('.article-list-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        function goNextPage() {
+            const totalPages = Math.ceil(currentFilteredArticles.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderArticleList();
+                document.querySelector('.article-list-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        searchInput.addEventListener('input', resetAndRender);
+        document.getElementById('prevPageBtn').addEventListener('click', goPrevPage);
+        document.getElementById('nextPageBtn').addEventListener('click', goNextPage);
+
+        // 弹窗关闭
+        closeModalBtn.addEventListener('click', () => {
+            articleModal.classList.remove('show');
+            document.body.style.overflow = 'auto';
+        });
+        articleModal.addEventListener('click', (e) => {
+            if (e.target === articleModal) {
+                articleModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && articleModal.classList.contains('show')) {
+                articleModal.classList.remove('show');
+                document.body.style.overflow = 'auto';
+            }
+            if (e.key === 'ArrowLeft' && !document.getElementById('prevPageBtn').disabled) {
+                e.preventDefault(); goPrevPage();
+            }
+            if (e.key === 'ArrowRight' && !document.getElementById('nextPageBtn').disabled) {
+                e.preventDefault(); goNextPage();
+            }
+        });
+
+        // 阅读进度条
+        window.addEventListener('scroll', () => {
+            const winScroll = document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            readingProgress.style.width = (winScroll / height) * 100 + '%';
+        });
+
+        // 回到顶部
+        window.addEventListener('scroll', () => {
+            backTopBtn.classList.toggle('show', window.scrollY > 300);
+        });
+        backTopBtn.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        window.addEventListener('DOMContentLoaded', renderArticleList);
+    </script>
+</body>
+</html>
