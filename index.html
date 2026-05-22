@@ -30,10 +30,6 @@
         .header-row {
             display: flex; align-items: center; justify-content: center; gap: 12px;
         }
-        .flag-icon {
-            width: 40px; height: 40px;
-            flex-shrink: 0;
-        }
         .site-title {
             font-size: 34px; font-weight: 900; color: #d9251d;
             letter-spacing: 2px;
@@ -212,7 +208,6 @@
 
         @media (max-width: 480px) {
             .site-title { font-size: 28px; }
-            .flag-icon { width: 34px; height: 34px; }
             .article-card-title { font-size: 18px; }
             .modal-title { font-size: 20px; }
             .contact-btn { height: 48px; font-size: 16px; }
@@ -224,7 +219,6 @@
         @media (max-width: 360px) {
             body { padding: 10px; }
             .site-title { font-size: 24px; }
-            .flag-icon { width: 28px; height: 28px; }
         }
 
         @media (min-width: 1024px) {
@@ -255,17 +249,17 @@
 
     <div class="reading-progress" id="readingProgress"></div>
 
+    <!-- 音频播放器（提前加载） -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="audio/geshengyuweixiao.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- ==================== 首页 ==================== -->
     <div class="page-section active" id="homePage">
         <header class="page-header">
             <div class="header-row">
-                <svg class="flag-icon" viewBox="0 0 60 40">
-                    <rect width="60" height="40" fill="#de2910"/>
-                    <polygon points="10,5 12,11 18,11 13,15 15,21 10,17 5,21 7,15 2,11 8,11" fill="#ffde00"/>
-                    <polygon points="10,7 11.5,10.5 15,10.5 12,12.5 13,16 10,13.5 7,16 8,12.5 5,10.5 8.5,10.5" fill="#ffde00"/>
-                </svg>
                 <h1 class="site-title">388班</h1>
-                <button class="music-btn" id="musicBtn" title="播放音乐">🎵</button>
+                <button class="music-btn" id="musicBtn1" title="播放音乐">🎵</button>
             </div>
         </header>
 
@@ -283,11 +277,6 @@
     <div class="page-section" id="articlePage">
         <header class="page-header">
             <div class="header-row">
-                <svg class="flag-icon" viewBox="0 0 60 40">
-                    <rect width="60" height="40" fill="#de2910"/>
-                    <polygon points="10,5 12,11 18,11 13,15 15,21 10,17 5,21 7,15 2,11 8,11" fill="#ffde00"/>
-                    <polygon points="10,7 11.5,10.5 15,10.5 12,12.5 13,16 10,13.5 7,16 8,12.5 5,10.5 8.5,10.5" fill="#ffde00"/>
-                </svg>
                 <h1 class="site-title">388班</h1>
                 <button class="music-btn" id="musicBtn2" title="播放音乐">🎵</button>
             </div>
@@ -327,11 +316,6 @@
     <div class="page-section" id="photoPage">
         <header class="page-header">
             <div class="header-row">
-                <svg class="flag-icon" viewBox="0 0 60 40">
-                    <rect width="60" height="40" fill="#de2910"/>
-                    <polygon points="10,5 12,11 18,11 13,15 15,21 10,17 5,21 7,15 2,11 8,11" fill="#ffde00"/>
-                    <polygon points="10,7 11.5,10.5 15,10.5 12,12.5 13,16 10,13.5 7,16 8,12.5 5,10.5 8.5,10.5" fill="#ffde00"/>
-                </svg>
                 <h1 class="site-title">388班</h1>
                 <button class="music-btn" id="musicBtn3" title="播放音乐">🎵</button>
             </div>
@@ -363,11 +347,6 @@
     </footer>
 
     <div class="back-top-btn" id="backTopBtn">↑</div>
-
-    <!-- 隐藏的音频播放器 -->
-    <audio id="bgMusic" loop>
-        <source src="audio/geshengyuweixiao.mp3" type="audio/mpeg">
-    </audio>
 
     <!-- 数据 -->
     <script src="articleData.js"></script>
@@ -528,26 +507,29 @@
         photoModal.addEventListener('click', (e) => { if (e.target === photoModal) closePhotoModal(); });
 
         // ========== 音乐播放 ==========
-        const bgMusic = document.getElementById('bgMusic');
-        const musicBtns = document.querySelectorAll('.music-btn');
-        let isMusicPlaying = false;
+        document.addEventListener('DOMContentLoaded', function() {
+            const bgMusic = document.getElementById('bgMusic');
+            const allMusicBtns = document.querySelectorAll('.music-btn');
 
-        function toggleMusic() {
-            if (isMusicPlaying) {
-                bgMusic.pause();
-                musicBtns.forEach(b => { b.textContent = '🎵'; b.classList.remove('playing'); });
-                isMusicPlaying = false;
-            } else {
-                bgMusic.play().then(() => {
-                    musicBtns.forEach(b => { b.textContent = '🎶'; b.classList.add('playing'); });
-                    isMusicPlaying = true;
-                }).catch(() => {
-                    alert('播放失败，请刷新页面后重试');
+            allMusicBtns.forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    if (bgMusic.paused) {
+                        bgMusic.play().then(function() {
+                            allMusicBtns.forEach(function(b) {
+                                b.textContent = '🎶';
+                                b.classList.add('playing');
+                            });
+                        }).catch(function() {});
+                    } else {
+                        bgMusic.pause();
+                        allMusicBtns.forEach(function(b) {
+                            b.textContent = '🎵';
+                            b.classList.remove('playing');
+                        });
+                    }
                 });
-            }
-        }
-
-        musicBtns.forEach(btn => btn.addEventListener('click', toggleMusic));
+            });
+        });
 
         // ========== 键盘 ==========
         document.addEventListener('keydown', (e) => {
