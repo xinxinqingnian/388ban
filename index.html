@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>388班 · 作文素材</title>
+    <title>388班 </title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
@@ -18,29 +18,76 @@
         }
         button { cursor: pointer; border: none; background: none; }
 
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
         .page-header {
             background-color: #fff; border-radius: 16px;
             padding: 28px 20px; text-align: center; margin-bottom: 20px;
-            border-bottom: 3px solid #2563eb;
+            border-bottom: 3px solid #d9251d;
             box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .header-row {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
         }
         .site-title {
-            font-size: 34px; font-weight: 900; color: #2563eb;
-            letter-spacing: 2px; margin-bottom: 6px;
+            font-size: 34px; font-weight: 900; color: #d9251d;
+            letter-spacing: 2px;
         }
+        .music-btn {
+            width: 42px; height: 42px;
+            background-color: #d9251d; color: #fff;
+            border-radius: 50%; font-size: 18px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+        .music-btn:hover { opacity: 0.8; }
+        .music-btn.playing { animation: pulse 1s infinite; }
+        @keyframes pulse {
+            0%,100% { box-shadow: 0 0 0 0 rgba(217,37,29,0.4); }
+            50% { box-shadow: 0 0 0 12px rgba(217,37,29,0); }
+        }
+
         .site-subtitle {
             font-size: 15px; color: #666; font-weight: 500;
         }
 
-        .contribute-btn {
+        .contribute-wrapper { width: 100%; margin-bottom: 20px; }
+        .contact-btn {
             display: flex; align-items: center; justify-content: center;
             width: 100%; height: 54px;
-            background: linear-gradient(90deg, #2563eb, #1d4ed8);
+            background: linear-gradient(90deg, #d9251d, #b91c1c);
             color: #fff; font-size: 17px; font-weight: bold;
             border-radius: 14px; text-decoration: none;
-            margin-bottom: 22px; transition: all 0.25s ease;
+            transition: all 0.25s ease;
         }
-        .contribute-btn:hover { opacity: 0.9; transform: scale(1.01); }
+        .contact-btn:hover { opacity: 0.9; transform: scale(1.01); }
+
+        .sub-nav-buttons { display: flex; gap: 12px; margin-bottom: 20px; }
+        .sub-nav-btn {
+            flex: 1; height: 48px; background-color: #fff;
+            border: 2px solid #d9251d; color: #d9251d;
+            font-size: 16px; font-weight: bold; border-radius: 12px;
+            cursor: pointer; transition: all 0.2s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .sub-nav-btn:hover { background-color: #d9251d; color: #fff; }
+
+        .back-home-btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 10px 20px; background-color: #fff;
+            border: 2px solid #d9251d; color: #d9251d;
+            font-size: 15px; font-weight: bold; border-radius: 10px;
+            cursor: pointer; margin-bottom: 15px; transition: all 0.2s ease;
+        }
+        .back-home-btn:hover { background-color: #d9251d; color: #fff; }
+
+        .article-list-header {
+            font-size: 19px; font-weight: 700; margin-bottom: 18px;
+            padding-left: 10px; border-left: 4px solid #d9251d;
+        }
 
         .search-input {
             width: 100%; height: 50px; background-color: #fff;
@@ -48,19 +95,13 @@
             padding: 0 18px; font-size: 15px; margin-bottom: 20px;
         }
 
-        .article-list-header {
-            font-size: 19px; font-weight: 700; margin-bottom: 18px;
-            padding-left: 10px; border-left: 4px solid #2563eb;
-        }
-
         #articleListContainer { display: block; }
-
         .article-card {
             background-color: #fff; border-radius: 16px;
             padding: 24px; margin-bottom: 18px; cursor: pointer;
             transition: all 0.3s ease; border: 1px solid #f0f0f0;
         }
-        .article-card:hover { transform: translateY(-3px); border-color: #2563eb; }
+        .article-card:hover { transform: translateY(-3px); border-color: #d9251d; }
         .article-card-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
         .article-card-meta {
             display: flex; justify-content: space-between;
@@ -79,7 +120,7 @@
         }
         .pagination-btn {
             padding: 8px 20px; background-color: #fff;
-            border: 1px solid #2563eb; color: #2563eb;
+            border: 1px solid #d9251d; color: #d9251d;
             font-size: 14px; font-weight: 600; border-radius: 8px;
             cursor: pointer; transition: all 0.2s ease;
         }
@@ -90,22 +131,22 @@
             padding: 50px 20px; text-align: center; color: #999;
         }
 
-        /* 弹窗 */
-        .article-modal {
+        .article-modal, .photo-modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background-color: rgba(0,0,0,0.65); display: none;
             align-items: center; justify-content: center;
             z-index: 9999; padding: 15px;
         }
-        .article-modal.show { display: flex; }
+        .article-modal.show, .photo-modal.show { display: flex; }
+
         .modal-container {
             background-color: #fff; width: 100%; max-width: 740px;
             border-radius: 18px; max-height: 85vh; overflow: hidden;
             display: flex; flex-direction: column;
         }
         .modal-header {
-            padding: 24px; background-color: #eff6ff;
-            border-bottom: 1px solid #dbeafe;
+            padding: 24px; background-color: #fef2f2;
+            border-bottom: 1px solid #eee;
         }
         .modal-title { font-size: 24px; font-weight: 800; margin-bottom: 6px; }
         .modal-author { font-size: 14px; color: #666; }
@@ -115,24 +156,53 @@
         }
         .modal-footer { padding: 20px 24px; text-align: right; }
         .modal-close-btn {
-            padding: 12px 26px; background-color: #2563eb;
+            padding: 12px 26px; background-color: #d9251d;
             color: #fff; font-size: 15px; border-radius: 10px;
             cursor: pointer; transition: all 0.2s ease;
         }
 
+        .photo-card {
+            background-color: #fff; border-radius: 16px;
+            overflow: hidden; margin-bottom: 18px; cursor: pointer;
+            transition: all 0.3s ease; border: 1px solid #f0f0f0;
+        }
+        .photo-card:hover { transform: translateY(-3px); border-color: #d9251d; box-shadow: 0 6px 16px rgba(0,0,0,0.08); }
+        .photo-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
+        .photo-card-info { padding: 16px 18px; }
+        .photo-card-title { font-size: 17px; font-weight: 700; margin-bottom: 6px; color: #222; }
+        .photo-card-desc { font-size: 14px; color: #666; }
+
+        .photo-modal { background-color: rgba(0,0,0,0.85); cursor: pointer; }
+        .photo-modal img { max-width: 90vw; max-height: 85vh; border-radius: 12px; object-fit: contain; }
+        .photo-modal-close {
+            position: fixed; top: 20px; right: 25px;
+            width: 44px; height: 44px; background-color: rgba(255,255,255,0.2);
+            color: #fff; font-size: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 10000; border: none;
+        }
+        .photo-modal-info {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%); background-color: rgba(0,0,0,0.7);
+            color: #fff; padding: 12px 24px; border-radius: 10px;
+            text-align: center; z-index: 10000; max-width: 80vw;
+        }
+        .photo-modal-info .title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+        .photo-modal-info .desc { font-size: 14px; opacity: 0.85; }
+
         .back-top-btn {
             position: fixed; right: 20px; bottom: 20px;
-            width: 50px; height: 50px; background-color: #2563eb;
+            width: 50px; height: 50px; background-color: #d9251d;
             color: #fff; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-size: 22px; opacity: 0; pointer-events: none;
-            transition: all 0.3s ease;
+            transition: all 0.3s ease; z-index: 100;
         }
         .back-top-btn.show { opacity: 1; pointer-events: auto; }
 
         .reading-progress {
             position: fixed; top: 0; left: 0; width: 0%; height: 3px;
-            background-color: #2563eb; z-index: 10000; transition: width 0.1s;
+            background-color: #d9251d; z-index: 10000; transition: width 0.1s;
         }
 
         .page-footer {
@@ -145,9 +215,11 @@
             .site-title { font-size: 28px; }
             .article-card-title { font-size: 18px; }
             .modal-title { font-size: 20px; }
-            .contribute-btn { height: 48px; font-size: 16px; }
+            .contact-btn { height: 48px; font-size: 16px; }
             .pagination-btn { padding: 6px 14px; font-size: 13px; }
             .back-top-btn { width: 44px; height: 44px; font-size: 20px; }
+            .photo-card img { height: 180px; }
+            .music-btn { width: 36px; height: 36px; font-size: 16px; }
         }
         @media (max-width: 360px) {
             body { padding: 10px; }
@@ -156,11 +228,11 @@
 
         @media (min-width: 1024px) {
             body { max-width: 1400px; padding: 20px 40px; }
-            #articleListContainer {
+            #articleListContainer, #photoGridContainer {
                 display: grid; grid-template-columns: repeat(2, 1fr); gap: 28px;
             }
-            .article-card { margin-bottom: 0; }
-            .article-card:hover {
+            .article-card, .photo-card { margin-bottom: 0; }
+            .article-card:hover, .photo-card:hover {
                 transform: translateY(-6px);
                 box-shadow: 0 12px 28px rgba(0,0,0,0.1);
             }
@@ -169,9 +241,11 @@
             .search-input { max-width: 600px; margin-left: auto; margin-right: auto; }
             .article-card { padding: 28px; }
             .article-card-title { font-size: 22px; }
+            .sub-nav-buttons { max-width: 600px; margin-left: auto; margin-right: auto; }
+            .contribute-wrapper { max-width: 600px; margin-left: auto; margin-right: auto; }
         }
         @media (min-width: 1600px) {
-            #articleListContainer { grid-template-columns: repeat(3, 1fr); }
+            #articleListContainer, #photoGridContainer { grid-template-columns: repeat(3, 1fr); }
             body { max-width: 1600px; }
         }
     </style>
@@ -180,40 +254,92 @@
 
     <div class="reading-progress" id="readingProgress"></div>
 
-    <!-- 顶部 -->
-    <header class="page-header">
-        <h1 class="site-title">388班 · 作文素材</h1>
-        <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
-    </header>
+    <!-- ==================== 首页 ==================== -->
+    <div class="page-section active" id="homePage">
+        <header class="page-header">
+            <div class="header-row">
+                <h1 class="site-title">388班</h1>
+                <button class="music-btn" id="musicBtn" title="播放音乐">🎵</button>
+            </div>
+            <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
+        </header>
 
-    <!-- 投稿按钮 -->
-    <a href="https://wj.qq.com/s2/26736829/64e9/" target="_blank" class="contribute-btn">📝 我要投稿 · 分享素材</a>
+        <div class="contribute-wrapper">
+            <a href="https://wj.qq.com/s2/26736829/64e9/" target="_blank" class="contact-btn">📝 我要投稿 · 分享素材</a>
+        </div>
 
-    <!-- 搜索 -->
-    <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索作文素材、关键词...">
-
-    <h2 class="article-list-header">📖 作文素材库</h2>
-
-    <!-- 文章列表 -->
-    <div id="articleListContainer"></div>
-
-    <!-- 分页 -->
-    <div id="paginationContainer" class="pagination-container">
-        <button id="prevPageBtn" class="pagination-btn" disabled>‹ 上一页</button>
-        <span id="pageInfo" style="font-size:14px; color:#666;">第 1 / 1 页</span>
-        <button id="nextPageBtn" class="pagination-btn" disabled>下一页 ›</button>
+        <div class="sub-nav-buttons">
+            <button class="sub-nav-btn" id="goArticlePageBtn">📰 作文素材</button>
+            <button class="sub-nav-btn" id="goPhotoPageBtn">📷 班级照片</button>
+        </div>
     </div>
 
-    <!-- 文章弹窗 -->
-    <div class="article-modal" id="articleModal">
-        <div class="modal-container">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modalArticleTitle"></h3>
-                <div class="modal-author" id="modalArticleAuthor"></div>
+    <!-- ==================== 文章区 ==================== -->
+    <div class="page-section" id="articlePage">
+        <header class="page-header">
+            <div class="header-row">
+                <h1 class="site-title">388班</h1>
+                <button class="music-btn" id="musicBtn2" title="播放音乐">🎵</button>
             </div>
-            <div class="modal-body" id="modalArticleContent"></div>
-            <div class="modal-footer">
-                <button class="modal-close-btn" id="closeModalBtn">关闭阅读</button>
+            <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
+        </header>
+
+        <button class="back-home-btn" id="backHomeFromArticleBtn">← 返回首页</button>
+
+        <div class="contribute-wrapper">
+            <a href="https://wj.qq.com/s2/26736829/64e9/" target="_blank" class="contact-btn">📝 我要投稿 · 分享素材</a>
+        </div>
+
+        <h2 class="article-list-header">📖 作文素材库</h2>
+        <input type="text" class="search-input" id="searchInput" placeholder="🔍 搜索作文素材、关键词...">
+
+        <div id="articleListContainer"></div>
+        <div id="paginationContainer" class="pagination-container">
+            <button id="prevPageBtn" class="pagination-btn" disabled>‹ 上一页</button>
+            <span id="pageInfo" style="font-size:14px; color:#666;">第 1 / 1 页</span>
+            <button id="nextPageBtn" class="pagination-btn" disabled>下一页 ›</button>
+        </div>
+
+        <div class="article-modal" id="articleModal">
+            <div class="modal-container">
+                <div class="modal-header">
+                    <h3 class="modal-title" id="modalArticleTitle"></h3>
+                    <div class="modal-author" id="modalArticleAuthor"></div>
+                </div>
+                <div class="modal-body" id="modalArticleContent"></div>
+                <div class="modal-footer">
+                    <button class="modal-close-btn" id="closeModalBtn">关闭阅读</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 照片区 ==================== -->
+    <div class="page-section" id="photoPage">
+        <header class="page-header">
+            <div class="header-row">
+                <h1 class="site-title">388班</h1>
+                <button class="music-btn" id="musicBtn3" title="播放音乐">🎵</button>
+            </div>
+            <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
+        </header>
+
+        <button class="back-home-btn" id="backHomeFromPhotoBtn">← 返回首页</button>
+
+        <div class="contribute-wrapper">
+            <a href="mailto:qqppqqppww@163.com" class="contact-btn">📷 我要投稿 · 班级照片</a>
+        </div>
+
+        <h2 class="article-list-header">📷 班级照片墙</h2>
+
+        <div id="photoGridContainer"></div>
+
+        <div class="photo-modal" id="photoModal">
+            <button class="photo-modal-close" id="photoModalClose">✕</button>
+            <img id="photoModalImg" src="" alt="">
+            <div class="photo-modal-info" id="photoModalInfo">
+                <div class="title" id="photoModalTitle"></div>
+                <div class="desc" id="photoModalDesc"></div>
             </div>
         </div>
     </div>
@@ -223,13 +349,28 @@
         <div class="copyright">© 2026 388班 · 作文素材库</div>
     </footer>
 
-    <!-- 回到顶部 -->
     <div class="back-top-btn" id="backTopBtn">↑</div>
+
+    <!-- 隐藏的音频播放器 -->
+    <audio id="bgMusic" loop>
+        <source src="audio/geshengyuweixiao.mp3" type="audio/mpeg">
+    </audio>
 
     <!-- 数据 -->
     <script src="articleData.js"></script>
+    <script src="imageData.js"></script>
     <script>
         const articleData = window.articleData || [];
+        const imageData = window.imageData || [];
+
+        const homePage = document.getElementById('homePage');
+        const articlePage = document.getElementById('articlePage');
+        const photoPage = document.getElementById('photoPage');
+
+        const goArticlePageBtn = document.getElementById('goArticlePageBtn');
+        const goPhotoPageBtn = document.getElementById('goPhotoPageBtn');
+        const backHomeFromArticleBtn = document.getElementById('backHomeFromArticleBtn');
+        const backHomeFromPhotoBtn = document.getElementById('backHomeFromPhotoBtn');
 
         const articleListContainer = document.getElementById('articleListContainer');
         const searchInput = document.getElementById('searchInput');
@@ -237,6 +378,13 @@
         const closeModalBtn = document.getElementById('closeModalBtn');
         const backTopBtn = document.getElementById('backTopBtn');
         const readingProgress = document.getElementById('readingProgress');
+
+        const photoGridContainer = document.getElementById('photoGridContainer');
+        const photoModal = document.getElementById('photoModal');
+        const photoModalImg = document.getElementById('photoModalImg');
+        const photoModalTitle = document.getElementById('photoModalTitle');
+        const photoModalDesc = document.getElementById('photoModalDesc');
+        const photoModalClose = document.getElementById('photoModalClose');
 
         let currentPage = 1;
         const pageSize = 5;
@@ -248,9 +396,21 @@
             });
         }
 
+        function showPage(pageId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            readingProgress.style.width = '0%';
+        }
+
+        goArticlePageBtn.addEventListener('click', () => { showPage('articlePage'); renderArticleList(); });
+        goPhotoPageBtn.addEventListener('click', () => { showPage('photoPage'); renderPhotos(); });
+        backHomeFromArticleBtn.addEventListener('click', () => showPage('homePage'));
+        backHomeFromPhotoBtn.addEventListener('click', () => showPage('homePage'));
+
+        // ========== 文章 ==========
         function renderArticleList() {
             const keyword = searchInput.value.trim().toLowerCase();
-
             currentFilteredArticles = articleData.filter(item => {
                 if (!item.check) return false;
                 return item.title.toLowerCase().includes(keyword) ||
@@ -290,7 +450,7 @@
             document.getElementById('prevPageBtn').disabled = (currentPage <= 1);
             document.getElementById('nextPageBtn').disabled = (currentPage >= totalPages);
 
-            document.querySelectorAll('.article-card').forEach(card => {
+            document.querySelectorAll('#articlePage .article-card').forEach(card => {
                 card.addEventListener('click', () => {
                     const data = currentFilteredArticles[parseInt(card.dataset.index)];
                     if (!data) return;
@@ -304,70 +464,103 @@
         }
 
         function resetAndRender() { currentPage = 1; renderArticleList(); }
-
         function goPrevPage() {
-            if (currentPage > 1) {
-                currentPage--;
-                renderArticleList();
-                document.querySelector('.article-list-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (currentPage > 1) { currentPage--; renderArticleList(); document.querySelector('#articlePage .article-list-header').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
         }
-
         function goNextPage() {
             const totalPages = Math.ceil(currentFilteredArticles.length / pageSize);
-            if (currentPage < totalPages) {
-                currentPage++;
-                renderArticleList();
-                document.querySelector('.article-list-header').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
+            if (currentPage < totalPages) { currentPage++; renderArticleList(); document.querySelector('#articlePage .article-list-header').scrollIntoView({ behavior: 'smooth', block: 'start' }); }
         }
 
         searchInput.addEventListener('input', resetAndRender);
         document.getElementById('prevPageBtn').addEventListener('click', goPrevPage);
         document.getElementById('nextPageBtn').addEventListener('click', goNextPage);
 
-        // 弹窗关闭
-        closeModalBtn.addEventListener('click', () => {
-            articleModal.classList.remove('show');
-            document.body.style.overflow = 'auto';
-        });
-        articleModal.addEventListener('click', (e) => {
-            if (e.target === articleModal) {
-                articleModal.classList.remove('show');
-                document.body.style.overflow = 'auto';
-            }
-        });
+        closeModalBtn.addEventListener('click', () => { articleModal.classList.remove('show'); document.body.style.overflow = 'auto'; });
+        articleModal.addEventListener('click', (e) => { if (e.target === articleModal) { articleModal.classList.remove('show'); document.body.style.overflow = 'auto'; } });
 
-        // 键盘快捷键
+        // ========== 照片 ==========
+        function renderPhotos() {
+            if (!imageData || imageData.length === 0) {
+                photoGridContainer.innerHTML = '<div class="empty-tip">📷 暂无照片，期待你的投稿</div>';
+                return;
+            }
+            let html = '';
+            imageData.forEach((photo, index) => {
+                html += `<div class="photo-card" data-index="${index}">
+                            <img src="${escapeHtml(photo.url)}" alt="${escapeHtml(photo.title)}" loading="lazy">
+                            <div class="photo-card-info">
+                                <div class="photo-card-title">${escapeHtml(photo.title)}</div>
+                                <div class="photo-card-desc">${escapeHtml(photo.description || '')}</div>
+                            </div>
+                        </div>`;
+            });
+            photoGridContainer.innerHTML = html;
+
+            document.querySelectorAll('#photoPage .photo-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const data = imageData[parseInt(card.dataset.index)];
+                    if (!data) return;
+                    photoModalImg.src = data.url;
+                    photoModalTitle.textContent = data.title;
+                    photoModalDesc.textContent = data.description || '';
+                    photoModal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+        }
+
+        function closePhotoModal() { photoModal.classList.remove('show'); document.body.style.overflow = 'auto'; }
+        photoModalClose.addEventListener('click', (e) => { e.stopPropagation(); closePhotoModal(); });
+        photoModal.addEventListener('click', (e) => { if (e.target === photoModal) closePhotoModal(); });
+
+        // ========== 音乐播放 ==========
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtns = document.querySelectorAll('.music-btn');
+        let isMusicPlaying = false;
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                bgMusic.pause();
+                musicBtns.forEach(b => { b.textContent = '🎵'; b.classList.remove('playing'); });
+            } else {
+                bgMusic.play().catch(() => alert('请先点击页面任意位置，再点音乐按钮'));
+                musicBtns.forEach(b => { b.textContent = '🎶'; b.classList.add('playing'); });
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        musicBtns.forEach(btn => btn.addEventListener('click', toggleMusic));
+
+        // ========== 键盘 ==========
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && articleModal.classList.contains('show')) {
-                articleModal.classList.remove('show');
-                document.body.style.overflow = 'auto';
+                articleModal.classList.remove('show'); document.body.style.overflow = 'auto';
             }
-            if (e.key === 'ArrowLeft' && !document.getElementById('prevPageBtn').disabled) {
-                e.preventDefault(); goPrevPage();
+            if (e.key === 'Escape' && photoModal.classList.contains('show')) {
+                closePhotoModal();
             }
-            if (e.key === 'ArrowRight' && !document.getElementById('nextPageBtn').disabled) {
-                e.preventDefault(); goNextPage();
+            if (articlePage.classList.contains('active')) {
+                if (e.key === 'ArrowLeft' && !document.getElementById('prevPageBtn').disabled) { e.preventDefault(); goPrevPage(); }
+                if (e.key === 'ArrowRight' && !document.getElementById('nextPageBtn').disabled) { e.preventDefault(); goNextPage(); }
             }
         });
 
-        // 阅读进度条
+        // ========== 进度条 + 回到顶部 ==========
         window.addEventListener('scroll', () => {
             const winScroll = document.documentElement.scrollTop;
             const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             readingProgress.style.width = (winScroll / height) * 100 + '%';
-        });
-
-        // 回到顶部
-        window.addEventListener('scroll', () => {
             backTopBtn.classList.toggle('show', window.scrollY > 300);
         });
-        backTopBtn.addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
+        backTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 
-        window.addEventListener('DOMContentLoaded', renderArticleList);
+        // ========== 初始化 ==========
+        window.addEventListener('DOMContentLoaded', () => {
+            showPage('homePage');
+            renderArticleList();
+            renderPhotos();
+        });
     </script>
 </body>
 </html>
