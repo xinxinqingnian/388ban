@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>388班 </title>
+    <title>388班</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
@@ -26,10 +26,13 @@
             padding: 28px 20px; text-align: center; margin-bottom: 20px;
             border-bottom: 3px solid #d9251d;
             box-shadow: 0 2px 12px rgba(0,0,0,0.05);
-            position: relative;
         }
         .header-row {
-            display: flex; align-items: center; justify-content: center; gap: 15px;
+            display: flex; align-items: center; justify-content: center; gap: 12px;
+        }
+        .flag-icon {
+            width: 40px; height: 40px;
+            flex-shrink: 0;
         }
         .site-title {
             font-size: 34px; font-weight: 900; color: #d9251d;
@@ -48,10 +51,6 @@
         @keyframes pulse {
             0%,100% { box-shadow: 0 0 0 0 rgba(217,37,29,0.4); }
             50% { box-shadow: 0 0 0 12px rgba(217,37,29,0); }
-        }
-
-        .site-subtitle {
-            font-size: 15px; color: #666; font-weight: 500;
         }
 
         .contribute-wrapper { width: 100%; margin-bottom: 20px; }
@@ -213,6 +212,7 @@
 
         @media (max-width: 480px) {
             .site-title { font-size: 28px; }
+            .flag-icon { width: 34px; height: 34px; }
             .article-card-title { font-size: 18px; }
             .modal-title { font-size: 20px; }
             .contact-btn { height: 48px; font-size: 16px; }
@@ -224,6 +224,7 @@
         @media (max-width: 360px) {
             body { padding: 10px; }
             .site-title { font-size: 24px; }
+            .flag-icon { width: 28px; height: 28px; }
         }
 
         @media (min-width: 1024px) {
@@ -258,10 +259,14 @@
     <div class="page-section active" id="homePage">
         <header class="page-header">
             <div class="header-row">
+                <svg class="flag-icon" viewBox="0 0 60 40">
+                    <rect width="60" height="40" fill="#de2910"/>
+                    <polygon points="10,5 12,11 18,11 13,15 15,21 10,17 5,21 7,15 2,11 8,11" fill="#ffde00"/>
+                    <polygon points="10,7 11.5,10.5 15,10.5 12,12.5 13,16 10,13.5 7,16 8,12.5 5,10.5 8.5,10.5" fill="#ffde00"/>
+                </svg>
                 <h1 class="site-title">388班</h1>
                 <button class="music-btn" id="musicBtn" title="播放音乐">🎵</button>
             </div>
-            <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
         </header>
 
         <div class="contribute-wrapper">
@@ -278,10 +283,14 @@
     <div class="page-section" id="articlePage">
         <header class="page-header">
             <div class="header-row">
+                <svg class="flag-icon" viewBox="0 0 60 40">
+                    <rect width="60" height="40" fill="#de2910"/>
+                    <polygon points="10,5 12,11 18,11 13,15 15,21 10,17 5,21 7,15 2,11 8,11" fill="#ffde00"/>
+                    <polygon points="10,7 11.5,10.5 15,10.5 12,12.5 13,16 10,13.5 7,16 8,12.5 5,10.5 8.5,10.5" fill="#ffde00"/>
+                </svg>
                 <h1 class="site-title">388班</h1>
                 <button class="music-btn" id="musicBtn2" title="播放音乐">🎵</button>
             </div>
-            <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
         </header>
 
         <button class="back-home-btn" id="backHomeFromArticleBtn">← 返回首页</button>
@@ -318,10 +327,14 @@
     <div class="page-section" id="photoPage">
         <header class="page-header">
             <div class="header-row">
+                <svg class="flag-icon" viewBox="0 0 60 40">
+                    <rect width="60" height="40" fill="#de2910"/>
+                    <polygon points="10,5 12,11 18,11 13,15 15,21 10,17 5,21 7,15 2,11 8,11" fill="#ffde00"/>
+                    <polygon points="10,7 11.5,10.5 15,10.5 12,12.5 13,16 10,13.5 7,16 8,12.5 5,10.5 8.5,10.5" fill="#ffde00"/>
+                </svg>
                 <h1 class="site-title">388班</h1>
                 <button class="music-btn" id="musicBtn3" title="播放音乐">🎵</button>
             </div>
-            <p class="site-subtitle">好开头 · 好结尾 · 好词好句 · 优秀范文</p>
         </header>
 
         <button class="back-home-btn" id="backHomeFromPhotoBtn">← 返回首页</button>
@@ -346,7 +359,7 @@
 
     <!-- 页脚 -->
     <footer class="page-footer">
-        <div class="copyright">© 2026 388班 · 作文素材库</div>
+        <div class="copyright">© 2026 388班</div>
     </footer>
 
     <div class="back-top-btn" id="backTopBtn">↑</div>
@@ -523,11 +536,15 @@
             if (isMusicPlaying) {
                 bgMusic.pause();
                 musicBtns.forEach(b => { b.textContent = '🎵'; b.classList.remove('playing'); });
+                isMusicPlaying = false;
             } else {
-                bgMusic.play().catch(() => alert('请先点击页面任意位置，再点音乐按钮'));
-                musicBtns.forEach(b => { b.textContent = '🎶'; b.classList.add('playing'); });
+                bgMusic.play().then(() => {
+                    musicBtns.forEach(b => { b.textContent = '🎶'; b.classList.add('playing'); });
+                    isMusicPlaying = true;
+                }).catch(() => {
+                    alert('播放失败，请刷新页面后重试');
+                });
             }
-            isMusicPlaying = !isMusicPlaying;
         }
 
         musicBtns.forEach(btn => btn.addEventListener('click', toggleMusic));
